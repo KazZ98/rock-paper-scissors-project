@@ -1,8 +1,6 @@
 function computerPlay() {
-    //This line take a random number between 0 and 2
-    let randomNumber = Math.floor(Math.random() * 3);
+    const randomNumber = Math.floor(Math.random() * 3); //This line take a random number between 0 and 2
     let computerHand;
-    
     if (randomNumber === 0) {
         computerHand = "Rock";
         return computerHand;
@@ -15,51 +13,64 @@ function computerPlay() {
     }
 }
 
-function playerPlay() {
-    let playerHand = prompt("Select between Rock, Paper or Scissors.");
-    //This line take the input text and convert the first character into an upper case and the following in lower case
-    let playerHandUp = playerHand.charAt(0).toUpperCase() + playerHand.slice(1).toLowerCase();
-    return playerHandUp;
+function playerPlay(e) {
+    const playerHand = e.target.textContent;
+    return playerHand
 }
 
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection == "Rock" && computerSelection == "Scissors" || playerSelection == "Paper" && computerSelection == "Rock" || playerSelection == "Scissors" && computerSelection == "Paper") {
-        return "Won";
-    } else if (playerSelection == computerSelection) {
-        return "Draw";
+function playRound(e) {
+    const playerSelection = playerPlay(e);
+    const computerSelection = computerPlay();
+    const infoDiv = document.createElement("div");
+    const playerDiv = document.querySelector("#player-score");
+    const computerDiv = document.querySelector("#computer-score");
+
+    if (computerDiv.textContent === "5") {
+        infoDiv.textContent = "You lose the game :(";
+        document.body.appendChild(infoDiv);
+    } else if (playerDiv.textContent === "5") {
+        infoDiv.textContent = "You won the game :)";
+        document.body.appendChild(infoDiv);
     } else {
-        return "Lose";
-    }
+        
+        if (playerDiv.textContent === "" || computerDiv.textContent === "") {
+            playerDiv.textContent = 0;
+            computerDiv.textContent = 0;
+            if (playerSelection === "Rock" && computerSelection === "Scissors" || playerSelection === "Paper" && computerSelection === "Rock" || playerSelection === "Scissors" && computerSelection === "Paper") {
+                infoDiv.textContent = "You Won!";
+                document.body.appendChild(infoDiv);
+                let playerScore = 1;
+                playerDiv.textContent = playerScore;
+            } else if (playerSelection === computerSelection) {
+                infoDiv.textContent = "You Draw!";
+                document.body.appendChild(infoDiv);
+            } else {
+                infoDiv.textContent = "You Lose!";
+                document.body.appendChild(infoDiv);
+                let computerScore = 1;
+                computerDiv.textContent = computerScore;
+            }
+        } else {
+            let playerCount = parseInt(playerDiv.textContent);
+            let computerCount = parseInt(computerDiv.textContent);
     
-}
-
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-
-    for (let i = 0; i < 5; i++) {
-        const playerSelection = playerPlay();
-        const computerSelection = computerPlay();
-        const currentRound = playRound(playerSelection, computerSelection);
-       if (currentRound == "Draw") {
-            console.log("You Draw!");
-       } else if (currentRound == "Won") {
-            playerScore += 1;
-            console.log(`You Won! ${playerSelection} beats ${computerSelection}`);
-       } else {
-            computerScore += 1;
-            console.log(`You lose! ${computerSelection} beats ${playerSelection}`);
-       }
-
-    }
-
-    if (playerScore > computerScore) {
-        console.log(`You win the game!\nPlayer Score: ${playerScore} Computer Score: ${computerScore}`);
-    } else if (playerScore < computerScore) {
-        console.log(`You lose the game :(\nPlayer Score: ${playerScore} Computer Score: ${computerScore}`);
-    } else {
-        console.log(`Wow! Is a Draw.\nPlayer Score: ${playerScore} Computer Score: ${computerScore}`);
+            if (playerSelection === "Rock" && computerSelection === "Scissors" || playerSelection === "Paper" && computerSelection === "Rock" || playerSelection === "Scissors" && computerSelection === "Paper") {
+                infoDiv.textContent = "You Won!";
+                document.body.appendChild(infoDiv);
+                playerCount = playerCount + 1;
+                playerDiv.textContent = playerCount;
+            } else if (playerSelection === computerSelection) {
+                infoDiv.textContent = "You Draw!";
+                document.body.appendChild(infoDiv);
+            } else {
+                infoDiv.textContent = "You Lose!";
+                document.body.appendChild(infoDiv);
+                computerCount = computerCount + 1;
+                computerDiv.textContent = computerCount;
+            }
+        }
     }
 }
 
-game();
+const btns = document.querySelectorAll("button");
+btns.forEach(btn => btn.addEventListener("click", playRound));
